@@ -1,3 +1,10 @@
+/*
+This project takes in a file containing the entire script of the Avengers movie. Our task is to use that file as data to
+analyze. This project is for practicing abstraction when coding.
+
+Coded by Isaak Weidman, and Brennan Mulligan, collectively.
+ */
+
 import java.util.*;
 import java.io.*;
 
@@ -47,7 +54,10 @@ public class Avengers {
 			} else if (userInput != 2 && userInput != 1) {
 				System.out.println("The value you entered was incorrect");
 				System.out.println("Please enter again.\n[1] yes, [2] no\n");
+				userInput = reader.nextInt();
 			}
+			if(userInput == 0)
+				break;
 		}
 		
 		//TODO build methods that analyze the information for Part B
@@ -55,18 +65,29 @@ public class Avengers {
 		
 		String word1, word2;
 		
-		System.out.print("CheckFrequency():\nPlease enter two words to check\n>");
+		System.out.print("\nCheckFrequency():\nPlease enter a word to check\n>");
+		word1 = reader.nextLine();//flush io stream
 		word1 = reader.nextLine();
+		System.out.print("Please enter a second word\n>");
 		word2 = reader.nextLine();
 		
 		//Compare the frequency of word1, to word 2, in List words
-		System.out.println(checkFrequency(word1, word2, words));
+		System.out.printf("\n%s shows up more frequently.", checkFrequency(word1, word2, words));
+		
+		//Gather 4 words before and after a given word
+		System.out.print("\ngetContext():\nPlease enter a word to get context about\n>");
+		String input = reader.nextLine();
+		String[] context;
+		context = getContext(input, words);
+		System.out.println(context);
+		
 		
 	}//end main()
 	
 	//===================================================================================================================
 	
 	//Reads in a specified file into an array list and returns the result
+	//Coded by Isaak Weidman
 	public static List<String> readFile(File file) {
 		
 		List<String> result = new ArrayList<>();
@@ -92,6 +113,7 @@ public class Avengers {
 	//===================================================================================================================
 	
 	//Removes all empty lines in an arrayList
+	//Coded by Isaak Weidman
 	public static List<String> removeWhiteSpace(List<String> list) {
 		
 		//Remove empty lines and any unnecessary white space. (tabs before/after text, and spaces more than one lone)
@@ -112,6 +134,7 @@ public class Avengers {
 	//===================================================================================================================
 	
 	//Splits each element of a list of Strings by a pattern specified.
+	//Coded by Isaak Weidman
 	public static List<String> splitList(List<String> source, String pattern) {
 		
 		List<String> words = new ArrayList<>();
@@ -133,7 +156,7 @@ public class Avengers {
 		
 		
 		return words;
-	}
+	}//end splitList()
 	
 	//===================================================================================================================
 	
@@ -146,7 +169,7 @@ public class Avengers {
 				times++;
 		}
 		return times;
-	}
+	}//end timesWordUsed()
 	
 	//===================================================================================================================
 	
@@ -195,7 +218,7 @@ public class Avengers {
 			}
 		}
 		return associate;
-	}
+	}//end connected()
 	
 	//===================================================================================================================
 	
@@ -220,11 +243,12 @@ public class Avengers {
 			return string2;
 		else
 			return null;
-	}
+	}//end checkFrequency()
 	
 	//===================================================================================================================
 	
 	//Gathers 4 words before and after the given word
+	//Coded by Isaak Weidman
 	public static String[] getContext(String str, List<String> source) {
 		
 		//List of Strings where the first 4 elements are the 4 before given String and the last 4 are after the given.
@@ -244,11 +268,12 @@ public class Avengers {
 		}
 		
 		return context;
-	}
+	}//end getContext()
 	
 	//===================================================================================================================
 	
 	//Simply prints a list of Strings line by line: keeps the main method small.
+	//Coded by Isaak Weidman
 	public static void printList(List<String> list) {
 		
 		for(String s : list) {
