@@ -4,34 +4,63 @@ import java.io.*;
 public class Avengers {
 	public static void main(String[] args) {
 		
+		//Basic Objects and variables for the main
+		Scanner reader = new Scanner(System.in);
+		int userInput;
+		
 		//Holds the script line by line
 		List<String> script;
 		List<String> lines;
 		List<String> words;
 		
-		//Read in the script using the read in method
+		//Part A code:
+		
 		script = readFile(new File("AvengersScript.txt"));
-		
-		//Print the script to the screen
-		for(String s : script) {
-			System.out.println(s);
-		}
-		
-		
 		lines = removeWhiteSpace(script);
-		
-		for(String s : lines) {
-			System.out.println(s);
-		}
-		
-		
-		//TODO split the script into individual words without punctuation.
-		
 		words = splitList(lines, "[^a-zA-Z]");
 		
-		for(String s : words) {
-			System.out.println(s);
+		System.out.print("Do you want to print the script and its processes to the screen?\n[1] yes, [2] no\n>");
+		userInput = reader.nextInt();
+		
+		
+		//While Loop takes the input from the user and loops it to make sure they enter a valid value.
+		while(userInput != 2) {
+			
+			if (userInput == 1) {
+				while (userInput != 0) {
+					
+					System.out.print("What list to print\n[1] Script\n[2] Lines\n[3] Words\nOr enter \'0\' to cancel\n>");
+					userInput = reader.nextInt();
+					
+					switch (userInput) {
+						case 1:
+							printList(script);
+							break;
+						case 2:
+							printList(lines);
+							break;
+						case 3:
+							printList(words);
+							break;
+					}
+				}
+			} else if (userInput != 2 && userInput != 1) {
+				System.out.println("The value you entered was incorrect");
+				System.out.println("Please enter again.\n[1] yes, [2] no\n");
+			}
 		}
+		
+		//TODO build methods that analyze the information for Part B
+		//Part B code:
+		
+		String word1, word2;
+		
+		System.out.print("CheckFrequency():\nPlease enter two words to check\n>");
+		word1 = reader.nextLine();
+		word2 = reader.nextLine();
+		
+		//Compare the frequency of word1, to word 2, in List words
+		System.out.println(checkFrequency(word1, word2, words));
 		
 	}//end main()
 	
@@ -70,8 +99,11 @@ public class Avengers {
 		
 		//Adds the item from the old list to the new list so long as it is not equal to ""
 		for(String s : list) {
-			if(!s.trim().isEmpty())
-				newList.add(s);
+			if(!s.isEmpty()) {
+				s.replaceAll("[^a-zA-Z ]", "");
+				s.replaceAll("\\p{P}", "");
+				newList.add(s.trim());
+			}
 		}
 		
 		return newList;
@@ -79,15 +111,26 @@ public class Avengers {
 	
 	//===================================================================================================================
 	
+	//Splits each element of a list of Strings by a pattern specified.
 	public static List<String> splitList(List<String> source, String pattern) {
 		
-		//TODO split each line of the source by the pattern provided.
 		List<String> words = new ArrayList<>();
 		String[] splitWords;
-		
+
 		for(String s : source) {
 			splitWords = s.split(pattern);
+			
+			for(String itm : splitWords) {
+				words.add(itm);
+			}
 		}
+		
+		//Check for and remove empty lines
+		for(int i = 0; i < words.size(); i++) {
+			if(words.get(i).isEmpty())
+				words.remove(i);
+		}
+		
 		
 		return words;
 	}
@@ -152,5 +195,64 @@ public class Avengers {
 			}
 		}
 		return associate;
+	}
+	
+	//===================================================================================================================
+	
+	//Checks the frequency of two Strings in a list of Strings and returns the String that shows up the most. If both
+	//Strings show up the same amount in the List, return null.
+	public static String checkFrequency(String string1, String string2, List<String> list) {
+		
+		int s1Counter = 0, s2Counter = 0;
+		
+		//count frequency of occurrences for each String
+		for(String s: list) {
+			if(s.equals(string1))
+				s1Counter++;
+			else if(s.equals(string2))
+				s2Counter++;
+		}
+		
+		//Compare frequency of Occurrences
+		if(s1Counter > s2Counter)
+			return string1;
+		else if(s1Counter < s2Counter)
+			return string2;
+		else
+			return null;
+	}
+	
+	//===================================================================================================================
+	
+	//Gathers 4 words before and after the given word
+	public static String[] getContext(String str, List<String> source) {
+		
+		//List of Strings where the first 4 elements are the 4 before given String and the last 4 are after the given.
+		String[] context = new String[8];
+		int counter = 0;
+		
+		//Gather 4 words before
+		for(int i = source.indexOf(str); i >= (i - 4); i--) {
+			context[counter] = source.get(i);
+			counter++;
+		}
+		
+		//Gather 4 words after
+		for(int i = source.indexOf(str); i <= (i + 4); i++) {
+			context[counter] = source.get(i);
+			counter++;
+		}
+		
+		return context;
+	}
+	
+	//===================================================================================================================
+	
+	//Simply prints a list of Strings line by line: keeps the main method small.
+	public static void printList(List<String> list) {
+		
+		for(String s : list) {
+			System.out.println(s);
+		}
 	}
 }
