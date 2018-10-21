@@ -1,3 +1,11 @@
+/*
+Brennan Mulligan and Isaak Weidman
+Avengers Project
+Goes through the script and finds
+multiple objectives while remaining
+modular and making use of abstraction
+*/
+
 import java.io.*;
 import java.util.*;
 
@@ -8,6 +16,10 @@ public class Avengers {
 		List<String> script;
 		List<String> lines;
 		List<String> words;
+		int count = 0;
+		int answered = 0;
+
+		Scanner reader = new Scanner(System.in);
 
 		//Read in the script using the read in method
 		script = readFile(new File("AvengersScript.txt"));
@@ -35,6 +47,37 @@ public class Avengers {
 			System.out.println(s);
 		}
 
+		System.out.println("===========================================================================================");
+
+		System.out.println("The word 'Tesseract' is used " + timesWordUsed(words, "Tesseract") + " times.");
+		System.out.println("The word 'Loki' is used " + timesWordUsed(words, "Loki") + " times.");
+		System.out.println("The word 'Thor' is used " + timesWordUsed(words, "Thor") + " times.");
+
+		System.out.println("===========================================================================================");
+
+		System.out.println("The name 'Hulk' is used + " + timesWordUsed(words, "Hulk") + " times while Banner is used " + timesWordUsed(words, "Banner") + " times");
+		System.out.println("The name 'Iron Man' is used + " + timesWordUsed(words, "Iron") + " times while Tony is used " + timesWordUsed(words, "Tony") + " times");
+		System.out.println("The name 'Captain America' is used + " + timesWordUsed(words, "Captain") + " times while Steve is used " + timesWordUsed(words, "Steve") + " times");
+		System.out.println("The name 'Black Widow' is used + " + timesWordUsed(words, "widow") + " times while Natasha is used " + timesWordUsed(words, "Natasha") + " times");
+		System.out.println("The name 'Hawkeye' is used + " + timesWordUsed(words, "Hawkeye") + " times while Barton is used " + timesWordUsed(words, "Barton") + " times");
+
+		System.out.println("===========================================================================================");
+
+		System.out.println("Tony is most commonly associated with " + connected(words, "Tony", "and"));
+
+		System.out.println("===========================================================================================");
+
+		while (answered == 0)
+		{
+			System.out.println("This is part of a sentence with Tesseract in it:");
+			System.out.println(surrounding(words, "Tesseract", count));
+			System.out.println("Does this tell you what the Tesseract is? 0 for no, 1 for yes");
+
+			answered = reader.nextInt();
+
+			if (answered == 0)
+				count++;
+		}
 	}//end main()
 
 	//===================================================================================================================
@@ -96,6 +139,7 @@ public class Avengers {
 
 	//===================================================================================================================
 
+	//Calculates how many times a word is used
 	public static int timesWordUsed (List<String> source, String word) {
 		int times = 0;
 
@@ -109,6 +153,10 @@ public class Avengers {
 
 	//===================================================================================================================
 
+	//Finds word most commonly connected to a word
+	//For example, somoeone could enter Tony for the word
+	//and "and" for the connector so it will find words such
+	//as "Nick" if the sentence says "Tony and Nick"
 	public static String connected (List<String> source, String word, String connector) {
 		ArrayList<String> associates = new ArrayList<String>();
 		ArrayList<Integer> associateNum = new ArrayList<Integer>();
@@ -119,6 +167,7 @@ public class Avengers {
 		{
 			if (source.get(x).equalsIgnoreCase(word))
 			{
+				//This if/else statement checks if the connector is before or after the word
 				if (source.get(x - 1).equalsIgnoreCase(connector))
 				{
 					for (int y = 0; y < associates.size(); y++)
@@ -154,5 +203,30 @@ public class Avengers {
 			}
 		}
 		return associate;
+	}
+
+	//===================================================================================================================
+
+	//Finds the words surrounding a word
+	//Count variable is used to detect how many times the user said 'no'
+	//That way, the program can skip when it finds the word again
+	//until it gets to a part that has not been used yet
+	public static String surrounding (List<String> source, String word, int count) {
+		String surrounded = "";
+		int methodCount = 0;
+
+		for (int x = 0; x < source.size(); x++)
+		{
+			if (methodCount == 0)
+			{
+				if (source.get(x).equalsIgnoreCase(word))
+				{
+					surrounded = (source.get(x - 4) + source.get(x - 3) + source.get(x - 2) + source.get(x - 1) + source.get(x) + source.get(x + 1) + source.get(x + 2) + source.get(x + 3) + source.get(x + 4));
+				}
+			}
+			else
+				methodCount++;
+		}
+		return surrounded;
 	}
 }//end Main.Avengers.java
